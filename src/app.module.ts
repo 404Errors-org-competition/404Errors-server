@@ -4,12 +4,14 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { DamageModule } from './damage/damage.module';
 import { ConfigModule } from "@nestjs/config";
+import { InfrastructureObjectModule } from './infrastructure-object/infrastructure-object.module';
 
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
         DatabaseModule,
-        DamageModule
+        DamageModule,
+        InfrastructureObjectModule
     ],
     controllers: [AppController],
     providers: [AppService],
