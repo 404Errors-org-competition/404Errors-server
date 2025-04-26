@@ -7,7 +7,7 @@ export const AverageAlarmDurationInRegions: Record<string, number> = {
     sumy: 1.0,
     odesa: 1.0,
     dnipro: 1.23,
-    donetsk: 3.3,
+    donetsk: 12,
     chernihiv: 1.0,
     zaporizhzhia: 1.23,
     vinnytsia: 1.0,
@@ -18,5 +18,9 @@ export const AverageAlarmDurationInRegions: Record<string, number> = {
     ivanoFrankivsk: 0.87,
     rivne: 1.0,
     volyn: 1.13,
-    zakarpattia: 0.7
+    zakarpattia: 0.7,
+    chernivtsi: 1.0,
+    cherkasy: 1.0,
+    luhansk: 12,
+
 } as const;
