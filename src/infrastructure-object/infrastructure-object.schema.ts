@@ -18,9 +18,6 @@ export class InfrastructureObject {
     region: Region
 
     @Prop()
-    category: InfrastructureObjectCategory;
-
-    @Prop()
     damageType: InfrastructureObjectDamageType;
 
     @Prop({ timestamps: true })
