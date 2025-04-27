@@ -7,6 +7,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     const PORT = process.env.PORT || 3000;
 
+    app.enableCors();
     const config = new DocumentBuilder()
         .setTitle('Portals Core Api Documentation')
         .setDescription('The Portals Core Api Documentation')
