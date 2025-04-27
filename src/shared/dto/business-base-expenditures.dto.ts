@@ -6,7 +6,4 @@ export class BusinessBaseExpendituresDto {
 
     @ApiProperty()
     readonly averageSalaryPerEmployee: number;
-
-    @ApiProperty()
-    readonly averageOtherExpenses: number;
 }

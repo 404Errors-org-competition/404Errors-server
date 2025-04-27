@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CalculateBusinessProfitRequestDto } from './dto/request/calculate-business-profit-request.dto';
 import {
     CalculateBusinessProfitResponseDto
@@ -31,21 +31,17 @@ export class BusinessCalculatorService {
         region: Region
     ): CalculateBusinessProfitResponseDto {
         const totalRevenue = this.calculateRevenue(calculateBusinessProfitRequestDto, region);
-        console.log("totalRevenue", totalRevenue);
         const totalExpenses = this.calculateExpenses(calculateBusinessProfitRequestDto);
-        console.log("totalExpenses", totalExpenses);
         const lostAmountDueToAlerts = this.calculateLostAmountDueToAlerts(calculateBusinessProfitRequestDto, region);
-        console.log("lostAmountDueToAlerts", lostAmountDueToAlerts);
 
         const netIncomePerMonth = totalRevenue - totalExpenses - lostAmountDueToAlerts;
-        const paybackPeriodMonths =
-            calculateBusinessProfitRequestDto.investmentAmount / (netIncomePerMonth > 0 ? netIncomePerMonth : 1);
+        const paybackPeriodMonths = calculateBusinessProfitRequestDto.investmentAmount / netIncomePerMonth ;
 
         return {
             region,
             netIncomePerMonth,
             lostAmountDueToAlerts,
-            paybackPeriodMonths: Math.ceil(paybackPeriodMonths)
+            paybackPeriodMonths: netIncomePerMonth >= 0 ? Math.ceil(paybackPeriodMonths) : null
         };
     }
 
@@ -54,31 +50,26 @@ export class BusinessCalculatorService {
         region: Region
     ): number {
         const baseData = BusinessBaseExpendituresData[calculateBusinessProfitRequestDto.businessType];
-        console.log("BaseData", baseData);
-
         if (!baseData) {
-            throw new Error(`Base expenditures data not found for business type: ${calculateBusinessProfitRequestDto.businessType}`);
+            throw new NotFoundException(
+                `Base expenditures data not found for business type: ${calculateBusinessProfitRequestDto.businessType}`
+            );
         }
 
-        const revenue = calculateBusinessProfitRequestDto.squareMeters * baseData.averageRevenuePerSquareMeter;
-        return revenue;
+        return baseData.averageSalaryPerEmployee * 15;
     }
 
     private calculateExpenses(
         calculateBusinessProfitRequestDto: CalculateBusinessProfitRequestDto
     ): number {
         const baseData = BusinessBaseExpendituresData[calculateBusinessProfitRequestDto.businessType];
-        console.log("BaseData", baseData);
-
         if (!baseData) {
-            throw new Error(`Base expenditures data not found for business type: ${calculateBusinessProfitRequestDto.businessType}`);
+            throw new NotFoundException(
+                `Base expenditures data not found for business type: ${calculateBusinessProfitRequestDto.businessType}`
+            );
         }
 
-        const salaryExpenses = calculateBusinessProfitRequestDto.employeesCount * baseData.averageSalaryPerEmployee;
-        const otherExpenses = baseData.averageOtherExpenses;
-
-        const totalExpenses = salaryExpenses + otherExpenses;
-        return totalExpenses;
+        return calculateBusinessProfitRequestDto.employeesCount * baseData.averageSalaryPerEmployee;
     }
 
 
@@ -87,23 +78,17 @@ export class BusinessCalculatorService {
         region: Region
     ): number {
         const regionKey = this.mapRegionToAlarmDataKey(region);
-
         const alarmDurationHours = AverageAlarmDurationInRegions[regionKey as keyof typeof AverageAlarmDurationInRegions];
-
         if (alarmDurationHours == null) {
             return 0;
         }
 
-        const workingHoursPerDay = 8;
-        const workingDaysPerMonth = 22;
-        const totalWorkingHoursPerMonth = workingHoursPerDay * workingDaysPerMonth;
+        const workingHoursPerDay = 12;
+        const totalWorkingHoursWithAlarms = workingHoursPerDay - alarmDurationHours;
+        const totalRevenue = this.calculateRevenue(calculateBusinessProfitRequestDto, region);
 
-        const baseRevenue = this.calculateRevenue(calculateBusinessProfitRequestDto, region);
-
-        const lostRevenuePercentagePerDay = alarmDurationHours / workingHoursPerDay;
-        const lostRevenuePerMonth = baseRevenue * lostRevenuePercentagePerDay * workingDaysPerMonth;
-
-        return lostRevenuePerMonth;
+        const lostAmountDueToAlerts = totalRevenue - (totalWorkingHoursWithAlarms * totalRevenue / 12);
+        return lostAmountDueToAlerts;
     }
 
     private mapRegionToAlarmDataKey(region: Region): string {
@@ -131,7 +116,7 @@ export class BusinessCalculatorService {
             [Region.LUHANSK]: "luhansk",
             [Region.KRYM]: "crimea",
             [Region.SEVASTOPOL]: "sevastopol",
-            [Region.CHERNIVTSI]: "chernivtsi", // <-- ✅ added missing one!
+            [Region.CHERNIVTSI]: "chernivtsi",
         };
 
         return mapping[region] || "";

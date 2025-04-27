@@ -4,32 +4,26 @@ import { BusinessBaseExpendituresDto } from "src/shared/dto/business-base-expend
 export const BusinessBaseExpendituresData: Record<BusinessType, BusinessBaseExpendituresDto> = {
     [BusinessType.COFFEE]: {
         averageRevenuePerSquareMeter: 30,
-        averageSalaryPerEmployee: 500,
-        averageOtherExpenses: 1000,
+        averageSalaryPerEmployee: 450,
     },
     [BusinessType.FAST_FOOD]: {
         averageRevenuePerSquareMeter: 50,
-        averageSalaryPerEmployee: 600,
-        averageOtherExpenses: 2000,
+        averageSalaryPerEmployee: 30,
     },
     [BusinessType.RESTAURANT]: {
         averageRevenuePerSquareMeter: 60,
-        averageSalaryPerEmployee: 700,
-        averageOtherExpenses: 3000,
+        averageSalaryPerEmployee: 380,
     },
     [BusinessType.CLOTHES]: {
         averageRevenuePerSquareMeter: 40,
-        averageSalaryPerEmployee: 450,
-        averageOtherExpenses: 1500,
+        averageSalaryPerEmployee: 350,
     },
     [BusinessType.GROCERY]: {
         averageRevenuePerSquareMeter: 35,
-        averageSalaryPerEmployee: 500,
-        averageOtherExpenses: 1200,
+        averageSalaryPerEmployee: 250,
     },
     [BusinessType.BAKERY]: {
         averageRevenuePerSquareMeter: 45,
-        averageSalaryPerEmployee: 500,
-        averageOtherExpenses: 1800,
+        averageSalaryPerEmployee: 200,
     },
 };
