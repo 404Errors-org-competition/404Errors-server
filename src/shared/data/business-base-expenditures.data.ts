@@ -7,12 +7,12 @@ export const BusinessBaseExpendituresData: Record<BusinessType, BusinessBaseExpe
         averageSalaryPerEmployee: 450,
     },
     [BusinessType.FAST_FOOD]: {
-        averageRevenuePerSquareMeter: 50,
-        averageSalaryPerEmployee: 30,
+        averageRevenuePerSquareMeter: 45,
+        averageSalaryPerEmployee: 220,
     },
     [BusinessType.RESTAURANT]: {
-        averageRevenuePerSquareMeter: 60,
-        averageSalaryPerEmployee: 380,
+        averageRevenuePerSquareMeter: 45,
+        averageSalaryPerEmployee: 300,
     },
     [BusinessType.CLOTHES]: {
         averageRevenuePerSquareMeter: 40,
