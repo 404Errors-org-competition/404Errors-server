@@ -30,7 +30,7 @@ export class BusinessCalculatorService {
         calculateBusinessProfitRequestDto: CalculateBusinessProfitRequestDto,
         region: Region
     ): CalculateBusinessProfitResponseDto {
-        const totalRevenue = this.calculateRevenue(calculateBusinessProfitRequestDto, region);
+        const totalRevenue = this.calculateRevenue(calculateBusinessProfitRequestDto);
         const totalExpenses = this.calculateExpenses(calculateBusinessProfitRequestDto);
         const lostAmountDueToAlerts = this.calculateLostAmountDueToAlerts(calculateBusinessProfitRequestDto, region);
 
@@ -47,7 +47,6 @@ export class BusinessCalculatorService {
 
     private calculateRevenue(
         calculateBusinessProfitRequestDto: CalculateBusinessProfitRequestDto,
-        region: Region
     ): number {
         const baseData = BusinessBaseExpendituresData[calculateBusinessProfitRequestDto.businessType];
         if (!baseData) {
@@ -69,9 +68,11 @@ export class BusinessCalculatorService {
             );
         }
 
-        return calculateBusinessProfitRequestDto.employeesCount * baseData.averageSalaryPerEmployee;
-    }
+        const expensesForEmployees = calculateBusinessProfitRequestDto.employeesCount * baseData.averageSalaryPerEmployee;
+        const expensesForArea = baseData.averageRevenuePerSquareMeter * calculateBusinessProfitRequestDto.squareMeters;
 
+        return expensesForEmployees + expensesForArea;
+    }
 
     private calculateLostAmountDueToAlerts(
         calculateBusinessProfitRequestDto: CalculateBusinessProfitRequestDto,
@@ -85,7 +86,7 @@ export class BusinessCalculatorService {
 
         const workingHoursPerDay = 12;
         const totalWorkingHoursWithAlarms = workingHoursPerDay - alarmDurationHours;
-        const totalRevenue = this.calculateRevenue(calculateBusinessProfitRequestDto, region);
+        const totalRevenue = this.calculateRevenue(calculateBusinessProfitRequestDto);
 
         const lostAmountDueToAlerts = totalRevenue - (totalWorkingHoursWithAlarms * totalRevenue / 12);
         return lostAmountDueToAlerts;
