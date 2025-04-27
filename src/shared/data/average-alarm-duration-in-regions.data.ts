@@ -22,5 +22,5 @@ export const AverageAlarmDurationInRegions: Record<string, number> = {
     chernivtsi: 1.0,
     cherkasy: 1.0,
     luhansk: 12,
-
+    kirovohrad: 0.8,
 } as const;
